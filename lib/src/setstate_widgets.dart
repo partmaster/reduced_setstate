@@ -19,8 +19,7 @@ class ReducedConsumer<S, P> extends StatelessWidget {
   @override
   Widget build(BuildContext context) => InheritedValueWidget(
         value: transformer(
-            InheritedValueWidget.of<ReducedStoreAndState<S>>(context)
-                .store),
+            InheritedValueWidget.of<ReducedStoreAndState<S>>(context).store),
         child: ReducedStatefulBuilderWidget<P>(builder: builder),
       );
 }

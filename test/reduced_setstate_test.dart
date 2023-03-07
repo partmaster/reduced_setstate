@@ -26,16 +26,14 @@ void main() {
       ReducedProvider(
         initialState: 0,
         child: ReducedConsumer<int, int>(
-          builder: ({Key? key, required int props}) =>
-              const SizedBox(),
+          builder: ({Key? key, required int props}) => const SizedBox(),
           transformer: (reducible) => reducible.state,
         ),
       ),
     );
 
-    final InheritedValueWidget<ReducedStoreAndState<int>> widget =
-        find.singleWidgetByType(
-            InheritedValueWidget<ReducedStoreAndState<int>>);
+    final InheritedValueWidget<ReducedStoreAndState<int>> widget = find
+        .singleWidgetByType(InheritedValueWidget<ReducedStoreAndState<int>>);
 
     final objectUnderTest = widget.value.store;
     objectUnderTest.reduce(Incrementer());
