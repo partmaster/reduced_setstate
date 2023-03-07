@@ -2,48 +2,32 @@
 
 Implementation of the 'reduced' API with StatefulWidget and InheritedWidget with following features:
 
-1. Implementation of the ```Reducible``` interface 
+1. Implementation of the ```ReducedStore``` interface 
 2. Register a state for management.
 3. Trigger a rebuild on widgets selectively after a state change.
 
 ## Features
 
-#### 1. Implementation of the ```Reducible``` interface 
+#### 1. Implementation of the ```ReducedStore``` interface 
 
 ```dart
-typedef ReducibleWidgetBuilder<S> = Widget Function(
-  Reducible<S> value,
+typedef ReducedStoreWidgetBuilder<S> = Widget Function(
+  ReducedStore<S> store,
   Widget child,
 );
 ```
 
 ```dart
-class ReducibleStatefulWidget<S> extends StatefulWidget {
-  const ReducibleStatefulWidget({
-    super.key,
-    required this.initialState,
-    required this.child,
-    required this.builder,
-  });
-
-  final S initialState;
-  final Widget child;
-  final ReducibleWidgetBuilder<S> builder;
+class ReducedProviderState<S>
+    extends State<ReducedProvider<S>>
+    implements ReducedStore<S> {
+  late S _state;
 
   @override
-  State<ReducibleStatefulWidget> createState() =>
-      _ReducibleStatefulWidgetState<S>();
-}
-```
-
-```dart
-class _ReducibleStatefulWidgetState<S>
-    extends State<ReducibleStatefulWidget<S>>
-    implements Reducible<S> {
-  _ReducibleStatefulWidgetState(S initialState)
-      : _state = initialState;
-
-  S _state;
+  initState() {
+    super.initState();
+    _state = widget.initialState;
+  }
 
   @override
   S get state => _state;
@@ -52,54 +36,71 @@ class _ReducibleStatefulWidgetState<S>
   reduce(reducer) => setState(() => _state = reducer(_state));
 
   @override
-  build(context) => widget.builder(reducible, widget.child);
+  build(context) => InheritedValueWidget(
+        value: ReducedStoreAndState(this),
+        child: widget.child,
+      );
+}
+```
+
+```dart
+class ReducedStoreAndState<S> {
+  ReducedStoreAndState(this.store) : state = store.state;
+
+  final ReducedStore<S> store;
+  final S state;
+
+  @override
+  get hashCode => Object.hash(store, state);
+
+  @override
+  operator ==(other) =>
+      other is ReducedStoreAndState &&
+      state == other.state &&
+      store == other.store;
 }
 ```
 
 #### 2. Register a state for management.
 
 ```dart
-class _ReducibleAndState<S> {
-  _ReducibleAndState(this.reducible) : state = reducible.state;
+class ReducedProvider<S> extends StatefulWidget {
+  const ReducedProvider({
+    super.key,
+    required this.initialState,
+    required this.child,
+  });
 
-  final Reducible<S> reducible;
-  final S state;
+  final S initialState;
+  final Widget child;
 
-  @override get hashCode => ...
-  @override operator ==(other) ...
+  @override
+  State<ReducedProvider> createState() =>
+      ReducedProviderState<S>();
 }
-```
-
-```dart
-Widget wrapWithProvider<S>({
-  required S initialState,
-  required Widget child,
-}) =>
-    ReducibleStatefulWidget(
-      initialState: initialState,
-      child: child,
-      builder: (reducible, child) => InheritedValueWidget(
-        value: _ReducibleAndState(reducible),
-        child: child,
-      ),
-    );
 ```
 
 #### 3. Trigger a rebuild on widgets selectively after a state change.
 
 ```dart
-Widget wrapWithConsumer<S, P>({
-  required ReducedWidgetBuilder<P> builder,
-  required ReducedTransformer<S, P> transformer,
-}) =>
-    Builder(
-      builder: (context) => InheritedValueWidget(
+class ReducedConsumer<S,P> extends StatelessWidget {
+  const ReducedConsumer({
+    super.key,
+  required this.builder,
+  required this.transformer,
+  });
+
+  final ReducedWidgetBuilder<P> builder;
+  final ReducedTransformer<S, P> transformer;
+
+  @override
+  Widget build(BuildContext context) => InheritedValueWidget(
         value: transformer(
-            InheritedValueWidget.of<ReducibleAndState<S>>(context)
-                .reducible),
+            InheritedValueWidget.of<ReducedStoreAndState<S>>(context)
+                .store),
         child: ReducedStatefulBuilderWidget<P>(builder: builder),
-      ),
-    );
+      );
+}
 ```
 
 ## Getting started
@@ -108,8 +109,10 @@ In the pubspec.yaml add dependencies on the package 'reduced' and on the package
 
 ```
 dependencies:
-  reduced: ^0.1.0
-  reduced_setstate: ^0.1.0
+  reduced: 
+    path: ../../
+  reduced_setstate: 
+    path: ../reduced_setstate
 ```
 
 Import package 'reduced' to implement the logic.
@@ -140,15 +143,15 @@ class Incrementer extends Reducer<int> {
 }
 
 class Props {
-  Props({required this.counterText, required this.onPressed});
+  const Props({required this.counterText, required this.onPressed});
 
   final String counterText;
-  final Callable<void> onPressed;
+  final VoidCallable onPressed;
 }
 
-Props transformProps(Reducible<int> reducible) => Props(
-      counterText: '${reducible.state}',
-      onPressed: CallableAdapter(reducible, Incrementer()),
+Props transformProps(ReducedStore<int> store) => Props(
+      counterText: '${store.state}',
+      onPressed: CallableAdapter(store, Incrementer()),
     );
 
 class MyHomePage extends StatelessWidget {
@@ -159,7 +162,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('reduced_fluttercommand example'),
+          title: const Text('reduced_bloc example'),
         ),
         body: Center(
           child: Column(
@@ -187,6 +190,7 @@ Finished counter demo app using logic.dart and 'reduced_setstate' package:
 // main.dart
 
 import 'package:flutter/material.dart';
+// import 'package:reduced_bloc/reduced_bloc.dart';
 import 'package:reduced_setstate/reduced_setstate.dart';
 
 import 'logic.dart';
@@ -197,13 +201,15 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => wrapWithProvider(
+  Widget build(BuildContext context) => ReducedProvider(
         initialState: 0,
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: wrapWithConsumer(
-            transformer: transformProps,
-            builder: MyHomePage.new,
+          home: Builder(
+            builder: (context) => const ReducedConsumer(
+              transformer: transformProps,
+              builder: MyHomePage.new,
+            ),
           ),
         ),
       );
