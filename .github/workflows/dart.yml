@@ -44,5 +44,5 @@ jobs:
 #        run: dart analyze
 
       - name: Run example/counter_app_with_selective_rebuild tests
-        working-directory: example/coucounter_app_with_selective_rebuildnter_app
+        working-directory: example/counter_app_with_selective_rebuild
         run: flutter test
