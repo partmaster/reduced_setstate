@@ -38,7 +38,7 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   S get state => _state;
 
   @override
-  reduce(reducer) => setState(() => _state = reducer(_state));
+  dispatch(event) => setState(() => _state = event(_state));
 
   @override
   build(context) => InheritedValueWidget(

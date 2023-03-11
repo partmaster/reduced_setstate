@@ -15,7 +15,7 @@ extension SingleWidgetByType on CommonFinders {
       find.byType(type).evaluate().single.widget as T;
 }
 
-class Incrementer extends Reducer<int> {
+class CounterIncremented extends Event<int> {
   @override
   int call(int state) => state + 1;
 }
@@ -36,7 +36,7 @@ void main() {
         .singleWidgetByType(InheritedValueWidget<ReducedStoreAndState<int>>);
 
     final objectUnderTest = widget.value.store;
-    objectUnderTest.reduce(Incrementer());
+    objectUnderTest.dispatch(CounterIncremented());
     expect(objectUnderTest.state, 1);
   });
 }
