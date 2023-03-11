@@ -21,7 +21,7 @@ class CounterIncremented extends Event<int> {
 }
 
 void main() {
-  testWidgets('Reducible reduce test', (WidgetTester tester) async {
+  testWidgets('ReducedProvider dispatch test', (WidgetTester tester) async {
     await tester.pumpWidget(
       ReducedProvider(
         initialState: 0,
