@@ -18,8 +18,7 @@ typedef ReducedStoreWidgetBuilder<S> = Widget Function(
 ```
 
 ```dart
-class ReducedProviderState<S>
-    extends State<ReducedProvider<S>>
+class ReducedProviderState<S> extends State<ReducedProvider<S>>
     implements ReducedStore<S> {
   late S _state;
 
@@ -33,7 +32,7 @@ class ReducedProviderState<S>
   S get state => _state;
 
   @override
-  reduce(reducer) => setState(() => _state = reducer(_state));
+  dispatch(event) => setState(() => _state = event(_state));
 
   @override
   build(context) => InheritedValueWidget(
@@ -109,10 +108,11 @@ In the pubspec.yaml add dependencies on the package 'reduced' and on the package
 
 ```
 dependencies:
-  reduced: 
-    path: ../../
+  reduced: 0.3.2
   reduced_setstate: 
-    path: ../reduced_setstate
+    git:
+      url: https://github.com/partmaster/reduced_setstate.git
+      ref: v0.3.2
 ```
 
 Import package 'reduced' to implement the logic.
