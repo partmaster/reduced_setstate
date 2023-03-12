@@ -10,15 +10,22 @@ typedef ReducedStoreWidgetBuilder<S> = Widget Function(
   Widget child,
 );
 
+typedef EventListener<S> = void Function(
+  ReducedStore<S> store,
+  Event<S> event,
+);
+
 class ReducedProvider<S> extends StatefulWidget {
   const ReducedProvider({
     super.key,
     required this.initialState,
+    this.onEvent,
     required this.child,
   });
 
   final S initialState;
   final Widget child;
+  final EventListener? onEvent;
 
   @override
   State<ReducedProvider> createState() => ReducedProviderState<S>();
@@ -38,7 +45,10 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   S get state => _state;
 
   @override
-  dispatch(event) => setState(() => _state = event(_state));
+  dispatch(event) => setState(() {
+        _state = event(_state);
+        widget.onEvent?.call(this, event);
+      });
 
   @override
   build(context) => InheritedValueWidget(
