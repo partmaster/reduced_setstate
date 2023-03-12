@@ -32,7 +32,10 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   S get state => _state;
 
   @override
-  dispatch(event) => setState(() => _state = event(_state));
+  dispatch(event) => setState(() {
+        _state = event(_state);
+        widget.onEventDispatched?.call(this, event);
+      });
 
   @override
   build(context) => InheritedValueWidget(
@@ -67,15 +70,16 @@ class ReducedProvider<S> extends StatefulWidget {
   const ReducedProvider({
     super.key,
     required this.initialState,
+    this.onEventDispatched,
     required this.child,
   });
 
   final S initialState;
   final Widget child;
+  final EventListener? onEventDispatched;
 
   @override
-  State<ReducedProvider> createState() =>
-      ReducedProviderState<S>();
+  State<ReducedProvider> createState() => ReducedProviderState<S>();
 }
 ```
 
