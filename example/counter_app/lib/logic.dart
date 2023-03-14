@@ -15,10 +15,10 @@ class Props {
   final VoidCallable onPressed;
 }
 
-  Props propsMapper(int state, EventProcessor<int> processor) => Props(
-        counterText: '$state',
-        onPressed: EventCarrier(processor, CounterIncremented()),
-      );
+Props propsMapper(int state, EventProcessor<int> processor) => Props(
+      counterText: '$state',
+      onPressed: EventCarrier(processor, CounterIncremented()),
+    );
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.props});
