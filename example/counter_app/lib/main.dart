@@ -1,6 +1,7 @@
 // main.dart
 
 import 'package:flutter/material.dart';
+import 'package:reduced/reduced.dart';
 import 'package:reduced_setstate/reduced_setstate.dart';
 
 import 'logic.dart';
@@ -15,8 +16,8 @@ class MyApp extends StatelessWidget {
         initialState: 0,
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: ReducedConsumer(
-            mapper: PropsMapper.instance,
+          home: const ReducedConsumer(
+            mapper: propsMapper,
             builder: MyHomePage.new,
           ),
         ),

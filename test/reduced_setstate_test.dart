@@ -21,19 +21,22 @@ class CounterIncremented extends Event<int> {
 }
 
 void main() {
-  testWidgets('ReducedProvider dispatch test', (WidgetTester tester) async {
+  testWidgets('ReducedProvider process test',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       ReducedProvider(
         initialState: 0,
         child: ReducedConsumer<int, int>(
-          builder: ({Key? key, required int props}) => const SizedBox(),
-          mapper: (reducible) => reducible.state,
+          builder: ({Key? key, required int props}) =>
+              const SizedBox(),
+          mapper: (int state, EventProcessor<int> processor) => state,
         ),
       ),
     );
 
-    final InheritedValueWidget<ReducedStoreAndState<int>> widget = find
-        .singleWidgetByType(InheritedValueWidget<ReducedStoreAndState<int>>);
+    final InheritedValueWidget<ReducedStoreAndState<int>> widget =
+        find.singleWidgetByType(
+            InheritedValueWidget<ReducedStoreAndState<int>>);
 
     final objectUnderTest = widget.value.store;
     objectUnderTest.process(CounterIncremented());
