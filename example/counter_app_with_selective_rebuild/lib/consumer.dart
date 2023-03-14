@@ -5,7 +5,7 @@ import 'package:reduced/reduced.dart';
 import 'package:reduced_setstate/reduced_setstate.dart';
 
 import 'props.dart';
-import 'transformer.dart';
+import 'mapper.dart';
 
 class MyHomePagePropsConsumer extends StatelessWidget {
   const MyHomePagePropsConsumer({
@@ -13,11 +13,11 @@ class MyHomePagePropsConsumer extends StatelessWidget {
     required this.builder,
   });
 
-  final ReducedWidgetBuilder<MyHomePageProps> builder;
+  final WidgetFromPropsBuilder<MyHomePageProps> builder;
 
   @override
   Widget build(BuildContext context) => ReducedConsumer(
-        transformer: transformMyHomePageProps,
+        mapper: StateToMyHomePagePropsMapper.instance,
         builder: builder,
       );
 }
@@ -28,11 +28,11 @@ class MyCounterWidgetPropsConsumer extends StatelessWidget {
     required this.builder,
   });
 
-  final ReducedWidgetBuilder<MyCounterWidgetProps> builder;
+  final WidgetFromPropsBuilder<MyCounterWidgetProps> builder;
 
   @override
   Widget build(context) => ReducedConsumer(
-        transformer: transformMyCounterWidgetProps,
+        mapper: StateToMyCounterWidgetPropsMapper.instance,
         builder: builder,
       );
 }

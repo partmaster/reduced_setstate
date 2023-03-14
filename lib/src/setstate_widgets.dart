@@ -10,15 +10,15 @@ class ReducedConsumer<S, P> extends StatelessWidget {
   const ReducedConsumer({
     super.key,
     required this.builder,
-    required this.transformer,
+    required this.mapper,
   });
 
-  final ReducedWidgetBuilder<P> builder;
-  final ReducedTransformer<S, P> transformer;
+  final WidgetFromPropsBuilder<P> builder;
+  final StateToPropsMapper<S, P> mapper;
 
   @override
   Widget build(BuildContext context) => InheritedValueWidget(
-        value: transformer(
+        value: mapper(
             InheritedValueWidget.of<ReducedStoreAndState<S>>(context).store),
         child: ReducedStatefulBuilderWidget<P>(builder: builder),
       );

@@ -27,7 +27,7 @@ void main() {
         initialState: 0,
         child: ReducedConsumer<int, int>(
           builder: ({Key? key, required int props}) => const SizedBox(),
-          transformer: (reducible) => reducible.state,
+          mapper: (reducible) => reducible.state,
         ),
       ),
     );
@@ -36,7 +36,7 @@ void main() {
         .singleWidgetByType(InheritedValueWidget<ReducedStoreAndState<int>>);
 
     final objectUnderTest = widget.value.store;
-    objectUnderTest.dispatch(CounterIncremented());
+    objectUnderTest.process(CounterIncremented());
     expect(objectUnderTest.state, 1);
   });
 }

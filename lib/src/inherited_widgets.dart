@@ -99,7 +99,7 @@ class ReducedStatefulBuilderWidget<V> extends StatefulWidget {
     required this.builder,
   });
 
-  final ReducedWidgetBuilder<V> builder;
+  final WidgetFromPropsBuilder<V> builder;
 
   @override
   State<ReducedStatefulBuilderWidget> createState() =>

@@ -5,16 +5,6 @@ import 'package:reduced/reduced.dart';
 
 import 'inherited_widgets.dart';
 
-typedef ReducedStoreWidgetBuilder<S> = Widget Function(
-  ReducedStore<S> store,
-  Widget child,
-);
-
-typedef EventListener<S> = void Function(
-  ReducedStore<S> store,
-  Event<S> event,
-);
-
 class ReducedProvider<S> extends StatefulWidget {
   const ReducedProvider({
     super.key,
@@ -25,14 +15,14 @@ class ReducedProvider<S> extends StatefulWidget {
 
   final S initialState;
   final Widget child;
-  final EventListener? onEventDispatched;
+  final EventListener<S>? onEventDispatched;
 
   @override
   State<ReducedProvider> createState() => ReducedProviderState<S>();
 }
 
 class ReducedProviderState<S> extends State<ReducedProvider<S>>
-    implements ReducedStore<S> {
+    implements Store<S> {
   late S _state;
 
   @override
@@ -45,9 +35,9 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   S get state => _state;
 
   @override
-  dispatch(event) => setState(() {
+  process(event) => setState(() {
         _state = event(_state);
-        widget.onEventDispatched?.call(this, event);
+        widget.onEventDispatched?.call(this, event, UniqueKey());
       });
 
   @override
@@ -60,7 +50,7 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
 class ReducedStoreAndState<S> {
   ReducedStoreAndState(this.store) : state = store.state;
 
-  final ReducedStore<S> store;
+  final Store<S> store;
   final S state;
 
   @override
