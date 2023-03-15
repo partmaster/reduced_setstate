@@ -6,19 +6,21 @@ import 'props.dart';
 import 'events.dart';
 import 'state.dart';
 
-MyHomePageProps stateToMyHomePagePropsMapper(
-  MyAppState state,
-  EventProcessor<MyAppState> processor,
-) =>
-    MyHomePageProps(
-      onPressed: EventCarrier(processor, CounterIncremented.instance),
-      title: state.title,
-    );
+class HomePagePropsMapper extends MyHomePageProps {
+  HomePagePropsMapper(
+    MyAppState state,
+    EventProcessor<MyAppState> processor,
+  ) : super(
+          onPressed: EventCarrier(processor, CounterIncremented.instance),
+          title: state.title,
+        );
+}
 
-MyCounterWidgetProps stateToMyCounterWidgetPropsMapper(
-  MyAppState state,
-  EventProcessor<MyAppState> processor,
-) =>
-    MyCounterWidgetProps(
-      counterText: '${state.counter}',
-    );
+class MyCounterWidgetPropsMapper extends MyCounterWidgetProps {
+  MyCounterWidgetPropsMapper(
+    MyAppState state,
+    EventProcessor<MyAppState> processor,
+  ) : super(
+          counterText: '${state.counter}',
+        );
+}

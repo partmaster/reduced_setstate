@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
           home: const ReducedConsumer(
-            mapper: propsMapper,
+            mapper: PropsMapper.new,
             builder: MyHomePage.new,
           ),
         ),
