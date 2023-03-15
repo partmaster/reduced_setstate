@@ -1,6 +1,6 @@
 name: reduced_setstate
 description: Implementation of the state management API 'reduced' on top of StatefulWidget and InheritedWidget'.
-version: 0.4.0
+version: 0.4.0-beta.1
 homepage: https://github.com/partmaster/reduced_setstate
 repository: https://github.com/partmaster/reduced_setstate.git
 publish_to: none
@@ -12,11 +12,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-#  reduced: 0.3.2
+#  reduced: 0.4.0
   reduced: 
     git:
       url: https://github.com/partmaster/reduced.git
-      ref: 85a1b6f
+      ref: v0.4.0-beta.1
 
 dev_dependencies:
   flutter_test:

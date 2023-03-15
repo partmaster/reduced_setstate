@@ -2,24 +2,17 @@
 
 Implementation of the 'reduced' API with StatefulWidget and InheritedWidget with following features:
 
-1. Implementation of the ```ReducedStore``` interface 
+1. Implementation of the ```Store``` interface 
 2. Register a state for management.
 3. Trigger a rebuild on widgets selectively after a state change.
 
 ## Features
 
-#### 1. Implementation of the ```ReducedStore``` interface 
-
-```dart
-typedef ReducedStoreWidgetBuilder<S> = Widget Function(
-  ReducedStore<S> store,
-  Widget child,
-);
-```
+#### 1. Implementation of the ```Store``` interface 
 
 ```dart
 class ReducedProviderState<S> extends State<ReducedProvider<S>>
-    implements ReducedStore<S> {
+    implements Store<S> {
   late S _state;
 
   @override
@@ -32,9 +25,9 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   S get state => _state;
 
   @override
-  dispatch(event) => setState(() {
+  process(event) => setState(() {
         _state = event(_state);
-        widget.onEventDispatched?.call(this, event);
+        widget.onEventDispatched?.call(this, event, UniqueKey());
       });
 
   @override
@@ -46,10 +39,10 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
 ```
 
 ```dart
-class ReducedStoreAndState<S> {
-  ReducedStoreAndState(this.store) : state = store.state;
+class StoreAndState<S> {
+  StoreAndState(this.store) : state = store.state;
 
-  final ReducedStore<S> store;
+  final Store<S> store;
   final S state;
 
   @override
@@ -57,7 +50,7 @@ class ReducedStoreAndState<S> {
 
   @override
   operator ==(other) =>
-      other is ReducedStoreAndState &&
+      other is StoreAndState &&
       state == other.state &&
       store == other.store;
 }
@@ -86,21 +79,23 @@ class ReducedProvider<S> extends StatefulWidget {
 #### 3. Trigger a rebuild on widgets selectively after a state change.
 
 ```dart
-class ReducedConsumer<S,P> extends StatelessWidget {
+class ReducedConsumer<S, P> extends StatelessWidget {
   const ReducedConsumer({
     super.key,
-  required this.builder,
-  required this.transformer,
+    required this.builder,
+    required this.mapper,
   });
 
-  final ReducedWidgetBuilder<P> builder;
-  final ReducedTransformer<S, P> transformer;
+  final WidgetFromPropsBuilder<P> builder;
+  final StateToPropsMapper<S, P> mapper;
 
   @override
-  Widget build(BuildContext context) => InheritedValueWidget(
-        value: transformer(
-            InheritedValueWidget.of<ReducedStoreAndState<S>>(context)
-                .store),
+  Widget build(BuildContext context) =>
+      _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context)
+          .store);
+
+  Widget _build(Store<S> store) => InheritedValueWidget(
+        value: mapper(store.state, store),
         child: ReducedStatefulBuilderWidget<P>(builder: builder),
       );
 }
@@ -112,11 +107,11 @@ In the pubspec.yaml add dependencies on the package 'reduced' and on the package
 
 ```
 dependencies:
-  reduced: 0.3.2
+  reduced: 0.4.0
   reduced_setstate: 
     git:
       url: https://github.com/partmaster/reduced_setstate.git
-      ref: v0.3.2
+      ref: v0.4.0
 ```
 
 Import package 'reduced' to implement the logic.
@@ -140,8 +135,9 @@ Implementation of the counter demo app logic with the 'reduced' API without furt
 
 import 'package:flutter/material.dart';
 import 'package:reduced/reduced.dart';
+import 'package:reduced/callbacks.dart';
 
-class Incrementer extends Reducer<int> {
+class CounterIncremented extends Event<int> {
   @override
   int call(int state) => state + 1;
 }
@@ -153,10 +149,13 @@ class Props {
   final VoidCallable onPressed;
 }
 
-Props transformProps(ReducedStore<int> store) => Props(
-      counterText: '${store.state}',
-      onPressed: CallableAdapter(store, Incrementer()),
-    );
+class PropsMapper extends Props {
+  PropsMapper(int state, EventProcessor<int> processor)
+      : super(
+          counterText: '$state',
+          onPressed: EventCarrier(processor, CounterIncremented()),
+        );
+}
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.props});
@@ -166,7 +165,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('reduced_bloc example'),
+          title: const Text('reduced_setstate example'),
         ),
         body: Center(
           child: Column(
@@ -194,7 +193,7 @@ Finished counter demo app using logic.dart and 'reduced_setstate' package:
 // main.dart
 
 import 'package:flutter/material.dart';
-// import 'package:reduced_bloc/reduced_bloc.dart';
+import 'package:reduced/reduced.dart';
 import 'package:reduced_setstate/reduced_setstate.dart';
 
 import 'logic.dart';
@@ -209,11 +208,9 @@ class MyApp extends StatelessWidget {
         initialState: 0,
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: Builder(
-            builder: (context) => const ReducedConsumer(
-              transformer: transformProps,
-              builder: MyHomePage.new,
-            ),
+          home: const ReducedConsumer(
+            mapper: PropsMapper.new,
+            builder: MyHomePage.new,
           ),
         ),
       );
