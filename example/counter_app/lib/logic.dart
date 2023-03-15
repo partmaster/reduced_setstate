@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:reduced/reduced.dart';
+import 'package:reduced/callbacks.dart';
 
 class CounterIncremented extends Event<int> {
   @override
