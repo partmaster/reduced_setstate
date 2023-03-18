@@ -10,12 +10,14 @@ class ReducedProvider<S> extends StatefulWidget {
     super.key,
     required this.initialState,
     this.onEventDispatched,
+    this.initializer,
     required this.child,
   });
 
   final S initialState;
   final Widget child;
   final EventListener<S>? onEventDispatched;
+  final Future<Event<S>>? initializer;
 
   @override
   State<ReducedProvider> createState() => ReducedProviderState<S>();
@@ -29,6 +31,7 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   initState() {
     super.initState();
     _state = widget.initialState;
+    widget.initializer?.then((event) => process(event));
   }
 
   @override
