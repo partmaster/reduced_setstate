@@ -16,7 +16,7 @@ dependencies:
   reduced: 
     git:
       url: https://github.com/partmaster/reduced.git
-      ref: 34f94c0
+      ref: 02dac5f
 
 dev_dependencies:
   flutter_test:
