@@ -119,18 +119,18 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "02dac5f"
-      resolved-ref: "02dac5fa07844c38995a215e5f90cc5e139eeb64"
+      ref: "v0.5.0-beta.1"
+      resolved-ref: "608784fdfe0d4008faafe2db13a03836c685c32a"
       url: "https://github.com/partmaster/reduced.git"
     source: git
-    version: "0.4.2"
+    version: "0.5.0"
   reduced_setstate:
     dependency: "direct main"
     description:
       path: "../.."
       relative: true
     source: path
-    version: "0.4.2"
+    version: "0.5.0-beta.1"
   sky_engine:
     dependency: transitive
     description: flutter
