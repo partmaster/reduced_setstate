@@ -19,6 +19,7 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   initState() {
     super.initState();
     _state = widget.initialState;
+    widget.initializer?.then((event) => process(event));
   }
 
   @override
@@ -27,7 +28,12 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   @override
   process(event) => setState(() {
         _state = event(_state);
-        widget.onEventDispatched?.call(this, event, UniqueKey());
+        widget.onEventDispatched?.call(
+          _state,
+          this,
+          event,
+          UniqueKey(),
+        );
       });
 
   @override
@@ -107,11 +113,11 @@ In the pubspec.yaml add dependencies on the package 'reduced' and on the package
 
 ```
 dependencies:
-  reduced: 0.4.0
+  reduced: 0.5.0
   reduced_setstate: 
     git:
       url: https://github.com/partmaster/reduced_setstate.git
-      ref: v0.4.0
+      ref: v0.5.0
 ```
 
 Import package 'reduced' to implement the logic.
@@ -133,7 +139,7 @@ Implementation of the counter demo app logic with the 'reduced' API without furt
 ```dart
 // logic.dart
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Action;
 import 'package:reduced/reduced.dart';
 import 'package:reduced/callbacks.dart';
 
@@ -153,7 +159,7 @@ class PropsMapper extends Props {
   PropsMapper(int state, EventProcessor<int> processor)
       : super(
           counterText: '$state',
-          onPressed: EventCarrier(processor, CounterIncremented()),
+          onPressed: Action(processor, CounterIncremented()),
         );
 }
 
