@@ -40,7 +40,12 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   @override
   process(event) => setState(() {
         _state = event(_state);
-        widget.onEventDispatched?.call(this, event, UniqueKey());
+        widget.onEventDispatched?.call(
+          _state,
+          this,
+          event,
+          UniqueKey(),
+        );
       });
 
   @override
