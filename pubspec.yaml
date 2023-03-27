@@ -12,11 +12,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-#  reduced: 0.5.0
+#  reduced: 0.5.1
   reduced: 
     git:
       url: https://github.com/partmaster/reduced.git
-      ref: 3c45107
+      ref: 58e994d
 
 dev_dependencies:
   flutter_test:
