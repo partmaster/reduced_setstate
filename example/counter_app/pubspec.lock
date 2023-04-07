@@ -119,8 +119,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "58e994d"
-      resolved-ref: "58e994db4709636290de0c7be312d595fe631cbf"
+      ref: b94f440
+      resolved-ref: b94f44047ba5e145a693adaea41413ca12fe7ec7
       url: "https://github.com/partmaster/reduced.git"
     source: git
     version: "0.5.1"

@@ -27,7 +27,9 @@ void main() {
         initialState: 0,
         child: ReducedConsumer<int, int>(
           builder: ({Key? key, required int props}) => const SizedBox(),
-          mapper: (int state, EventProcessor<int> processor) => state,
+          mapper: (int state, EventProcessor<int> processor,
+                  [String? routeName]) =>
+              state,
         ),
       ),
     );

@@ -17,7 +17,7 @@ class Props {
 }
 
 class PropsMapper extends Props {
-  PropsMapper(int state, EventProcessor<int> processor)
+  PropsMapper(int state, EventProcessor<int> processor, [String? routeName])
       : super(
           counterText: '$state',
           onPressed: Action(processor, CounterIncremented()),
