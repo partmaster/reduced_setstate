@@ -5,7 +5,7 @@ import 'package:reduced/reduced.dart';
 
 import 'inherited_widgets.dart';
 
-typedef StoreAccessor<S> = void Function(Store<S> store);
+typedef EventSourceRegistrar<S> = void Function(Store<S> store);
 
 class ReducedProvider<S> extends StatefulWidget {
   const ReducedProvider({
@@ -13,7 +13,7 @@ class ReducedProvider<S> extends StatefulWidget {
     required this.initialState,
     this.onEventDispatched,
     this.initializer,
-    this.accessors,
+    this.eventSourceRegistrars,
     required this.child,
   });
 
@@ -21,7 +21,7 @@ class ReducedProvider<S> extends StatefulWidget {
   final Widget child;
   final EventListener<S>? onEventDispatched;
   final Future<Event<S>>? initializer;
-  final List<StoreAccessor<S>>? accessors;
+  final List<EventSourceRegistrar<S>>? eventSourceRegistrars;
 
   @override
   State<ReducedProvider> createState() => ReducedProviderState<S>();
@@ -37,13 +37,13 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
     _state = widget.initialState;
     widget.initializer?.then((event) {
       process(event);
-      widget.accessors?.forEach((e) => e(this));
+      widget.eventSourceRegistrars?.forEach((e) => e(this));
     });
   }
 
   @override
   void didUpdateWidget(covariant ReducedProvider<S> oldWidget) {
-    widget.accessors?.forEach((e) => e(this));
+    widget.eventSourceRegistrars?.forEach((e) => e(this));
     super.didUpdateWidget(oldWidget);
   }
 
