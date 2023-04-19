@@ -5,7 +5,10 @@ import 'package:reduced/reduced.dart';
 
 import 'inherited_widgets.dart';
 
-typedef EventSourceRegistrar<S> = void Function(Store<S> store);
+abstract class EventHandlerRegistrar<S> {
+  void register(Store<S> store);
+  void deregister();
+}
 
 class ReducedProvider<S> extends StatefulWidget {
   const ReducedProvider({
@@ -13,7 +16,7 @@ class ReducedProvider<S> extends StatefulWidget {
     required this.initialState,
     this.onEventDispatched,
     this.initializer,
-    this.eventSourceRegistrars,
+    this.eventHandlerRegistrars,
     required this.child,
   });
 
@@ -21,7 +24,7 @@ class ReducedProvider<S> extends StatefulWidget {
   final Widget child;
   final EventListener<S>? onEventDispatched;
   final Future<Event<S>>? initializer;
-  final List<EventSourceRegistrar<S>>? eventSourceRegistrars;
+  final List<EventHandlerRegistrar<S>>? eventHandlerRegistrars;
 
   @override
   State<ReducedProvider> createState() => ReducedProviderState<S>();
@@ -37,14 +40,29 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
     _state = widget.initialState;
     widget.initializer?.then((event) {
       process(event);
-      widget.eventSourceRegistrars?.forEach((e) => e(this));
+      widget.eventHandlerRegistrars?.forEach((e) => e.register(this));
     });
   }
 
   @override
   void didUpdateWidget(covariant ReducedProvider<S> oldWidget) {
-    widget.eventSourceRegistrars?.forEach((e) => e(this));
+    oldWidget.eventHandlerRegistrars
+        ?.where(
+          (e) => widget.eventHandlerRegistrars?.contains(e) != true,
+        )
+        .forEach((e) => e.deregister());
+    widget.eventHandlerRegistrars
+        ?.where(
+          (e) => oldWidget.eventHandlerRegistrars?.contains(e) != false,
+        )
+        .forEach((e) => e.register(this));
     super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    widget.eventHandlerRegistrars?.forEach((e) => e.deregister());
+    super.dispose();
   }
 
   @override
