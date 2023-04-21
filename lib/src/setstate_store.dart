@@ -73,8 +73,7 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
   process(event) => setState(() {
         _state = event(_state);
         widget.onEventDispatched?.call(
-          _state,
-          this,
+          data,
           event,
           UniqueKey(),
         );
@@ -85,6 +84,9 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
         value: ReducedStoreAndState(this),
         child: widget.child,
       );
+
+  @override
+  StoreData<S> get data => StoreData(_state, this);
 }
 
 class ReducedStoreAndState<S> {

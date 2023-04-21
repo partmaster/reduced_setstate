@@ -15,7 +15,7 @@ class ReducedConsumer<S, P> extends StatelessWidget {
   });
 
   final WidgetFromPropsBuilder<P> builder;
-  final StateToPropsMapper<S, P> mapper;
+  final StoreDataToPropsMapper<S, P> mapper;
   final String? routeName;
 
   @override
@@ -23,7 +23,7 @@ class ReducedConsumer<S, P> extends StatelessWidget {
       _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context).store);
 
   Widget _build(Store<S> store) => InheritedValueWidget(
-        value: mapper(store.state, store, routeName),
+        value: mapper(store.data, routeName),
         child: ReducedStatefulBuilderWidget<P>(builder: builder),
       );
 }
