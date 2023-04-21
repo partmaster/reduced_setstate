@@ -8,22 +8,22 @@ import 'state.dart';
 
 class HomePagePropsMapper extends MyHomePageProps {
   HomePagePropsMapper(
-    StoreData<MyAppState> data, [
+    StoreSnapshot<MyAppState> snapshot,
     String? routeName,
-  ]) : super(
-          onPressed: Action(
-            data.processor,
+  ) : super(
+          onPressed: Command(
+            snapshot.processor,
             CounterIncremented.instance,
           ),
-          title: data.state.title,
+          title: snapshot.state.title,
         );
 }
 
 class MyCounterWidgetPropsMapper extends MyCounterWidgetProps {
   MyCounterWidgetPropsMapper(
-    StoreData<MyAppState> data, [
+    StoreSnapshot<MyAppState> snapshot, [
     String? routeName,
   ]) : super(
-          counterText: '${data.state.counter}',
+          counterText: '${snapshot.state.counter}',
         );
 }
