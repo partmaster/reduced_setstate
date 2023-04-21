@@ -104,3 +104,81 @@ class ReducedStoreAndState<S> {
       state == other.state &&
       store == other.store;
 }
+
+class ReducedPageProvider<S> extends StatefulWidget {
+  const ReducedPageProvider({
+    super.key,
+    required this.initialState,
+    this.onEventDispatched,
+    this.initializer,
+    this.eventHandlerRegistrars,
+    required this.child,
+  });
+
+  final S initialState;
+  final Widget child;
+  final EventListener<S>? onEventDispatched;
+  final Future<Event<S>>? initializer;
+  final List<EventHandlerRegistrar<S>>? eventHandlerRegistrars;
+
+  @override
+  State<ReducedPageProvider> createState() => ReducedPageProviderState<S>();
+}
+
+class ReducedPageProviderState<S> extends State<ReducedPageProvider<S>>
+    implements Store<S> {
+  late S _state;
+
+  @override
+  initState() {
+    super.initState();
+    _state = widget.initialState;
+    widget.initializer?.then((event) {
+      process(event);
+      widget.eventHandlerRegistrars?.forEach((e) => e.register(this));
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant ReducedPageProvider<S> oldWidget) {
+    oldWidget.eventHandlerRegistrars
+        ?.where(
+          (e) => widget.eventHandlerRegistrars?.contains(e) != true,
+        )
+        .forEach((e) => e.deregister());
+    widget.eventHandlerRegistrars
+        ?.where(
+          (e) => oldWidget.eventHandlerRegistrars?.contains(e) != false,
+        )
+        .forEach((e) => e.register(this));
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    widget.eventHandlerRegistrars?.forEach((e) => e.deregister());
+    super.dispose();
+  }
+
+  @override
+  S get state => _state;
+
+  @override
+  process(event) => setState(() {
+        _state = event(_state);
+        widget.onEventDispatched?.call(
+          data,
+          event,
+          UniqueKey(),
+        );
+      });
+
+  @override
+  build(context) => InheritedValueWidget(
+        value: ReducedStoreAndState(this),
+        child: widget.child,
+      );
+
+  @override
+  StoreData<S> get data => StoreData(_state, this);
+}
