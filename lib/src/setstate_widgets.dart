@@ -15,15 +15,16 @@ class ReducedConsumer<S, P> extends StatelessWidget {
   });
 
   final WidgetFromPropsBuilder<P> builder;
-  final StoreDataToPropsMapper<S, P> mapper;
+  final SnapshotToPropsMapper<S, P> mapper;
   final String? routeName;
 
   @override
   Widget build(BuildContext context) =>
-      _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context).store);
+      _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context)
+          .store);
 
   Widget _build(Store<S> store) => InheritedValueWidget(
-        value: mapper(store.data, routeName),
+        value: mapper(store.snapshot, routeName),
         child: ReducedStatefulBuilderWidget<P>(builder: builder),
       );
 }
@@ -36,7 +37,7 @@ class ReducedPageBinder<S1, S2, P> extends StatelessWidget {
     required this.initialState,
   });
   final WidgetFromPropsBuilder<P> builder;
-  final DoubleStoreDataToPropsMapper<S1, S2, P> mapper;
+  final SnapshotsToPropsMapper<S1, S2, P> mapper;
   final S2 initialState;
 
   @override
@@ -60,7 +61,7 @@ class ReducedPageConsumer<S1, S2, P> extends StatelessWidget {
   });
 
   final WidgetFromPropsBuilder<P> builder;
-  final DoubleStoreDataToPropsMapper<S1, S2, P> mapper;
+  final SnapshotsToPropsMapper<S1, S2, P> mapper;
   final String? routeName;
 
   @override
@@ -75,13 +76,8 @@ class ReducedPageConsumer<S1, S2, P> extends StatelessWidget {
 
   Widget _build(Store<S1> appStore, Store<S2> pageStore) =>
       InheritedValueWidget(
-        value: mapper(
-            StoreData(appStore.state, appStore),
-            StoreData(
-              pageStore.state,
-              pageStore,
-            ),
-            routeName),
+        value:
+            mapper(appStore.snapshot, pageStore.snapshot, routeName),
         child: ReducedStatefulBuilderWidget<P>(builder: builder),
       );
 }
