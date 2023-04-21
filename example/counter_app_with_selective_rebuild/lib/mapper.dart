@@ -7,19 +7,23 @@ import 'event.dart';
 import 'state.dart';
 
 class HomePagePropsMapper extends MyHomePageProps {
-  HomePagePropsMapper(MyAppState state, EventProcessor<MyAppState> processor,
-      [String? routeName])
-      : super(
-          onPressed: Action(processor, CounterIncremented.instance),
-          title: state.title,
+  HomePagePropsMapper(
+    StoreData<MyAppState> data, [
+    String? routeName,
+  ]) : super(
+          onPressed: Action(
+            data.processor,
+            CounterIncremented.instance,
+          ),
+          title: data.state.title,
         );
 }
 
 class MyCounterWidgetPropsMapper extends MyCounterWidgetProps {
   MyCounterWidgetPropsMapper(
-      MyAppState state, EventProcessor<MyAppState> processor,
-      [String? routeName])
-      : super(
-          counterText: '${state.counter}',
+    StoreData<MyAppState> data, [
+    String? routeName,
+  ]) : super(
+          counterText: '${data.state.counter}',
         );
 }
