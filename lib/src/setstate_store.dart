@@ -54,8 +54,7 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
         .forEach((e) => e.deregister());
     widget.eventHandlerRegistrars
         ?.where(
-          (e) =>
-              oldWidget.eventHandlerRegistrars?.contains(e) != false,
+          (e) => oldWidget.eventHandlerRegistrars?.contains(e) != false,
         )
         .forEach((e) => e.register(this));
     super.didUpdateWidget(oldWidget);
@@ -123,12 +122,11 @@ class ReducedPageProvider<S> extends StatefulWidget {
   final List<EventHandlerRegistrar<S>>? eventHandlerRegistrars;
 
   @override
-  State<ReducedPageProvider> createState() =>
-      ReducedPageProviderState<S>();
+  State<ReducedPageProvider> createState() => ReducedPageProviderState<S>();
 }
 
-class ReducedPageProviderState<S>
-    extends State<ReducedPageProvider<S>> implements Store<S> {
+class ReducedPageProviderState<S> extends State<ReducedPageProvider<S>>
+    implements Store<S> {
   late S _state;
 
   @override
@@ -150,8 +148,7 @@ class ReducedPageProviderState<S>
         .forEach((e) => e.deregister());
     widget.eventHandlerRegistrars
         ?.where(
-          (e) =>
-              oldWidget.eventHandlerRegistrars?.contains(e) != false,
+          (e) => oldWidget.eventHandlerRegistrars?.contains(e) != false,
         )
         .forEach((e) => e.register(this));
     super.didUpdateWidget(oldWidget);

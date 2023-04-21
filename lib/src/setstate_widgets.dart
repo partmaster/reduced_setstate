@@ -20,8 +20,7 @@ class ReducedConsumer<S, P> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context)
-          .store);
+      _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context).store);
 
   Widget _build(Store<S> store) => InheritedValueWidget(
         value: mapper(store.snapshot, routeName),
@@ -76,8 +75,7 @@ class ReducedPageConsumer<S1, S2, P> extends StatelessWidget {
 
   Widget _build(Store<S1> appStore, Store<S2> pageStore) =>
       InheritedValueWidget(
-        value:
-            mapper(appStore.snapshot, pageStore.snapshot, routeName),
+        value: mapper(appStore.snapshot, pageStore.snapshot, routeName),
         child: ReducedStatefulBuilderWidget<P>(builder: builder),
       );
 }
