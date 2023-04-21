@@ -17,10 +17,10 @@ class Props {
 }
 
 class PropsMapper extends Props {
-  PropsMapper(StoreData<int> data, [String? routeName])
+  PropsMapper(StoreSnapshot<int> snapshot, [String? routeName])
       : super(
-          counterText: '${data.state}',
-          onPressed: Action(data.processor, CounterIncremented()),
+          counterText: '${snapshot.state}',
+          onPressed: Command(snapshot.processor, CounterIncremented()),
         );
 }
 
