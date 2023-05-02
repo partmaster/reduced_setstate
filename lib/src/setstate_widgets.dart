@@ -34,10 +34,12 @@ class ReducedPageBinder<S1, S2, P> extends StatelessWidget {
     required this.builder,
     required this.mapper,
     required this.initialState,
+    required this.routeName,
   });
   final WidgetFromPropsBuilder<P> builder;
   final SnapshotsToPropsMapper<S1, S2, P> mapper;
   final S2 initialState;
+  final String? routeName;
 
   @override
   Widget build(BuildContext context) => ReducedPageProvider(
@@ -46,6 +48,7 @@ class ReducedPageBinder<S1, S2, P> extends StatelessWidget {
           builder: (context) => ReducedPageConsumer<S1, S2, P>(
             mapper: mapper,
             builder: builder,
+            routeName: routeName,
           ),
         ),
       );
