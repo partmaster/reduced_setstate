@@ -7,7 +7,7 @@ import 'inherited_widgets.dart';
 
 abstract class EventHandlerRegistrar<S> {
   const EventHandlerRegistrar();
-  void register(StoreSnapshot<S> snapshot);
+  void register(Store<S> store);
   void deregister();
 }
 
@@ -42,7 +42,7 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
     widget.initializer?.then((event) {
       process(event);
       widget.eventHandlerRegistrars?.forEach(
-        (e) => e.register(this.snapshot),
+        (e) => e.register(this),
       );
     });
   }
@@ -56,7 +56,8 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
         .forEach((e) => e.deregister());
     widget.eventHandlerRegistrars
         ?.where(
-          (e) => oldWidget.eventHandlerRegistrars?.contains(e) != false,
+          (e) =>
+              oldWidget.eventHandlerRegistrars?.contains(e) != false,
         )
         .forEach((e) => e.register(this));
     super.didUpdateWidget(oldWidget);
@@ -124,11 +125,12 @@ class ReducedPageProvider<S> extends StatefulWidget {
   final List<EventHandlerRegistrar<S>>? eventHandlerRegistrars;
 
   @override
-  State<ReducedPageProvider> createState() => ReducedPageProviderState<S>();
+  State<ReducedPageProvider> createState() =>
+      ReducedPageProviderState<S>();
 }
 
-class ReducedPageProviderState<S> extends State<ReducedPageProvider<S>>
-    implements Store<S> {
+class ReducedPageProviderState<S>
+    extends State<ReducedPageProvider<S>> implements Store<S> {
   late S _state;
 
   @override
@@ -150,7 +152,8 @@ class ReducedPageProviderState<S> extends State<ReducedPageProvider<S>>
         .forEach((e) => e.deregister());
     widget.eventHandlerRegistrars
         ?.where(
-          (e) => oldWidget.eventHandlerRegistrars?.contains(e) != false,
+          (e) =>
+              oldWidget.eventHandlerRegistrars?.contains(e) != false,
         )
         .forEach((e) => e.register(this));
     super.didUpdateWidget(oldWidget);
