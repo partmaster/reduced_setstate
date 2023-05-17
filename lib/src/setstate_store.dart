@@ -7,7 +7,7 @@ import 'inherited_widgets.dart';
 
 abstract class EventHandlerRegistrar<S> {
   const EventHandlerRegistrar();
-  void register(Store<S> store);
+  void register(StoreSnapshot<S> snapshot);
   void deregister();
 }
 
