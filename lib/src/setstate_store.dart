@@ -41,7 +41,9 @@ class ReducedProviderState<S> extends State<ReducedProvider<S>>
     _state = widget.initialState;
     widget.initializer?.then((event) {
       process(event);
-      widget.eventHandlerRegistrars?.forEach((e) => e.register(this));
+      widget.eventHandlerRegistrars?.forEach(
+        (e) => e.register(this.snapshot),
+      );
     });
   }
 
