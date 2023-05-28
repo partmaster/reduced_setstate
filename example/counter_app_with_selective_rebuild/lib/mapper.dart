@@ -9,7 +9,7 @@ import 'state.dart';
 class HomePagePropsMapper extends MyHomePageProps {
   HomePagePropsMapper(
     StoreSnapshot<MyAppState> snapshot,
-    String? routeName,
+    RoutingContext routing,
   ) : super(
           onPressed: Command(
             snapshot.processor,
@@ -21,9 +21,9 @@ class HomePagePropsMapper extends MyHomePageProps {
 
 class MyCounterWidgetPropsMapper extends MyCounterWidgetProps {
   MyCounterWidgetPropsMapper(
-    StoreSnapshot<MyAppState> snapshot, [
-    String? routeName,
-  ]) : super(
+    StoreSnapshot<MyAppState> snapshot,
+    RoutingContext routing,
+  ) : super(
           counterText: '${snapshot.state.counter}',
         );
 }
