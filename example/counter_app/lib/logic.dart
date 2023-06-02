@@ -17,7 +17,7 @@ class Props {
 }
 
 class PropsMapper extends Props {
-  PropsMapper(StoreSnapshot<int> snapshot, String? routeName)
+  PropsMapper(StoreSnapshot<int> snapshot, RoutingContext routing)
       : super(
           counterText: '${snapshot.state}',
           onPressed: Command(
