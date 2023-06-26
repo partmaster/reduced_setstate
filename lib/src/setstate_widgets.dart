@@ -20,8 +20,7 @@ class ReducedConsumer<S, P> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context)
-          .store);
+      _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context).store);
 
   Widget _build(Store<S> store) => InheritedValueWidget(
         value: mapper(store.snapshot, routing),
