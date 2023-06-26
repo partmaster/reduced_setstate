@@ -20,7 +20,8 @@ class ReducedConsumer<S, P> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context).store);
+      _build(InheritedValueWidget.of<ReducedStoreAndState<S>>(context)
+          .store);
 
   Widget _build(Store<S> store) => InheritedValueWidget(
         value: mapper(store.snapshot, routing),
@@ -79,6 +80,65 @@ class ReducedPageConsumer<S1, S2, P> extends StatelessWidget {
   Widget _build(Store<S1> appStore, Store<S2> pageStore) =>
       InheritedValueWidget(
         value: mapper(appStore.snapshot, pageStore.snapshot, routing),
+        child: ReducedStatefulBuilderWidget<P>(builder: builder),
+      );
+}
+
+class ReducedConsumer2<S1, S2, RC, P> extends StatelessWidget {
+  const ReducedConsumer2({
+    super.key,
+    required this.builder,
+    required this.mapper,
+    required this.initialState,
+    required this.routing,
+  });
+  final WidgetFromPropsBuilder<P> builder;
+  final MappingContextToPropsMapper<S1, S2, RC, P> mapper;
+  final S2 initialState;
+  final RC routing;
+
+  @override
+  Widget build(BuildContext context) => ReducedPageProvider(
+        initialState: initialState,
+        child: Builder(
+          builder: (context) => ReducedPageConsumer2<S1, S2, RC, P>(
+            mapper: mapper,
+            builder: builder,
+            routing: routing,
+          ),
+        ),
+      );
+}
+
+class ReducedPageConsumer2<S1, S2, RC, P> extends StatelessWidget {
+  const ReducedPageConsumer2({
+    super.key,
+    required this.builder,
+    required this.mapper,
+    required this.routing,
+  });
+
+  final WidgetFromPropsBuilder<P> builder;
+  final MappingContextToPropsMapper<S1, S2, RC, P> mapper;
+  final RC routing;
+
+  @override
+  Widget build(BuildContext context) => _build(
+        InheritedValueWidget.of<ReducedStoreAndState<S1>>(
+          context,
+        ).store,
+        InheritedValueWidget.of<ReducedStoreAndState<S2>>(
+          context,
+        ).store,
+      );
+
+  Widget _build(Store<S1> appStore, Store<S2> pageStore) =>
+      InheritedValueWidget(
+        value: mapper(MappingContext(
+          appSnapshot: appStore.snapshot,
+          pageSnapshot: pageStore.snapshot,
+          routingContext: routing,
+        )),
         child: ReducedStatefulBuilderWidget<P>(builder: builder),
       );
 }
