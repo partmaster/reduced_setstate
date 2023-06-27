@@ -13,7 +13,7 @@ dependencies:
   reduced: 
     git:
       url: https://github.com/partmaster/reduced.git
-      ref: 'c3b7066'
+      ref: 'f52643b'
   reduced_setstate: 
     path: ../../
 
